@@ -28,4 +28,5 @@ for ax in axs:
 
 plt.tight_layout()
 plt.savefig("outputs/risk_analysis.png", dpi=150)
-plt.show()
+plt.savefig('outputs/risk_analysis.png', dpi=150)
+print("Saved outputs/risk_analysis.png")

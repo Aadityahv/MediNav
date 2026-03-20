@@ -35,6 +35,7 @@ for ax in axs.flat:
 
 plt.tight_layout()
 plt.savefig("outputs/risk_visualization.png", dpi=150)
-plt.show()
+plt.savefig('outputs/risk_visualization.png', dpi=150)
+print("Saved outputs/risk_visualization.png")
 
 print("\nVisualization saved to outputs/risk_visualization.png")
