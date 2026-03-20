@@ -1,0 +1,34 @@
+﻿  Trial 1/20 done  (start=(np.int64(52), np.int64(74)), goal=(np.int64(71), np.int64(15)))
+  Trial 2/20 done  (start=(np.int64(43), np.int64(80)), goal=(np.int64(69), np.int64(30)))
+  Trial 3/20 done  (start=(np.int64(52), np.int64(78)), goal=(np.int64(51), np.int64(53)))
+  Trial 4/20 done  (start=(np.int64(74), np.int64(10)), goal=(np.int64(50), np.int64(75)))
+  Trial 5/20 done  (start=(np.int64(73), np.int64(14)), goal=(np.int64(20), np.int64(36)))
+  Trial 6/20 done  (start=(np.int64(24), np.int64(21)), goal=(np.int64(65), np.int64(81)))
+  Trial 7/20 done  (start=(np.int64(22), np.int64(65)), goal=(np.int64(71), np.int64(38)))
+  Trial 8/20 done  (start=(np.int64(19), np.int64(92)), goal=(np.int64(70), np.int64(42)))
+  Trial 9/20 done  (start=(np.int64(51), np.int64(81)), goal=(np.int64(73), np.int64(63)))
+  Trial 10/20 done  (start=(np.int64(20), np.int64(45)), goal=(np.int64(73), np.int64(61)))
+  Trial 11/20 done  (start=(np.int64(69), np.int64(68)), goal=(np.int64(32), np.int64(77)))
+  Trial 12/20 done  (start=(np.int64(22), np.int64(78)), goal=(np.int64(71), np.int64(71)))
+  Trial 13/20 done  (start=(np.int64(70), np.int64(83)), goal=(np.int64(36), np.int64(81)))
+  Trial 14/20 done  (start=(np.int64(23), np.int64(30)), goal=(np.int64(63), np.int64(74)))
+  Trial 15/20 done  (start=(np.int64(49), np.int64(59)), goal=(np.int64(22), np.int64(11)))
+  Trial 16/20 done  (start=(np.int64(59), np.int64(75)), goal=(np.int64(24), np.int64(14)))
+  Trial 17/20 done  (start=(np.int64(69), np.int64(73)), goal=(np.int64(19), np.int64(26)))
+  Trial 18/20 done  (start=(np.int64(21), np.int64(77)), goal=(np.int64(43), np.int64(76)))
+  Trial 19/20 done  (start=(np.int64(72), np.int64(50)), goal=(np.int64(24), np.int64(29)))
+  Trial 20/20 done  (start=(np.int64(51), np.int64(40)), goal=(np.int64(24), np.int64(65)))
+
+ΓöîΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓö¼ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓö¼ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÉ
+Γöé Metric                      Γöé Standard A*     Γöé Risk-Aware A*   Γöé
+Γö£ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓö╝ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓö╝ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöñ
+Γöé Mean Path Length (cells)    Γöé           64.8  Γöé           66.6  Γöé
+Γöé Path Length Overhead (%)    Γöé             0%  Γöé           2.8%  Γöé
+Γöé Mean Min Clearance (cells)  Γöé           1.72  Γöé           2.99  Γöé
+Γöé Mean Safety Violations      Γöé           33.8  Γöé            2.0  Γöé
+Γöé Safety Violation Rate (%)   Γöé          52.1%  Γöé           3.1%  Γöé
+ΓööΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓö┤ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓö┤ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÿ
+
+  Completed 20 / 20 trials  (seed=42)
+
+  Chart saved ΓåÆ C:\Users\chopr\.gemini\antigravity\scratch\medinav\outputs\evaluation_results.png

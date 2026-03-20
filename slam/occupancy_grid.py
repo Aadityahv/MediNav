@@ -173,8 +173,8 @@ def main():
         os.makedirs('outputs')
         
     plt.savefig('outputs/occupancy_grid.png', dpi=150)
-    np.save('outputs/occupancy_grid.npy', p_map)
-    print("Saved plot to outputs/occupancy_grid.png")
+    np.save("outputs/occupancy_grid.npy", p_map)
+    print("Saved plot to outputs/occupancy_grid.png and occupancy_grid.npy")
 
 if __name__ == '__main__':
     main()
