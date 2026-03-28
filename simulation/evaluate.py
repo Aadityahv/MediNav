@@ -146,7 +146,7 @@ def risk_astar(grid, risk_map, start, goal, lambda_weight=8.0):
 # Evaluation
 # ---------------------------------------------------------------------------
 
-def evaluate(n_trials=20, seed=42):
+def evaluate(n_trials=30, seed=42):
     np.random.seed(seed)
     grid, risk_map, dist_map = _generate_hospital_grid()
 
@@ -245,7 +245,7 @@ def evaluate(n_trials=20, seed=42):
                    color="#34A853", edgecolor="white", linewidth=0.5)
 
     ax.set_ylabel("Value")
-    ax.set_title("Standard A* vs Risk-Aware A* — Evaluation Metrics")
+    ax.set_title("Standard A* vs Risk-Aware A* — Evaluation Metrics (30 trials)")
     ax.set_xticks(x)
     ax.set_xticklabels(labels)
     ax.legend()
