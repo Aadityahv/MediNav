@@ -1,10 +1,10 @@
 import numpy as np
-from scipy.ndimage import distance_transform_edt, gaussian_filter, uniform_filter
+from scipy.ndimage import distance_transform_edt, gaussian_filter
 import os
 
 OCC_THRESHOLD = 0.6
-DISTANCE_WEIGHT = 0.6
-DENSITY_WEIGHT = 0.4
+DISTANCE_WEIGHT = 0.7
+DENSITY_WEIGHT = 0.3
 SMOOTHING_SIGMA = 1.5
 EPS = 1e-8
 
@@ -15,6 +15,15 @@ try:
     p_map = np.load("outputs/occupancy_grid.npy")
 except Exception as e:
     raise FileNotFoundError("occupancy_grid.npy not found. Run SLAM first.") from e
+
+try:
+    slam_uncertainty = np.load("outputs/slam_uncertainty.npy")
+    if slam_uncertainty.shape != p_map.shape:
+        slam_uncertainty = np.ones_like(p_map) * 0.3  # fallback if shape mismatch
+    print("Loaded SLAM uncertainty map from outputs/slam_uncertainty.npy")
+except FileNotFoundError:
+    print("WARNING: slam_uncertainty.npy not found, using uniform uncertainty=0.3")
+    slam_uncertainty = np.ones_like(p_map) * 0.3
 
 if len(p_map.shape) != 2:
     raise ValueError("Occupancy grid must be 2D")
@@ -27,10 +36,14 @@ distance = distance_transform_edt(free_space)
 distance_risk = np.exp(-distance)
 distance_risk = (distance_risk - distance_risk.min()) / (distance_risk.max() - distance_risk.min() + EPS)
 
-density = uniform_filter(occupancy.astype(float), size=5)
-density = (density - density.min()) / (density.max() - density.min() + EPS)
+# R_unc comes from actual SLAM pose covariance (exported by graphslam.py)
+uncertainty_risk = slam_uncertainty.copy()
+uncertainty_risk = (uncertainty_risk - uncertainty_risk.min()) / (
+    uncertainty_risk.max() - uncertainty_risk.min() + 1e-8
+)
 
-risk_map = DISTANCE_WEIGHT * distance_risk + DENSITY_WEIGHT * density
+risk_map = DISTANCE_WEIGHT * distance_risk + DENSITY_WEIGHT * uncertainty_risk
+print("R_unc now sourced from SLAM pose covariance map")
 
 risk_map = gaussian_filter(risk_map, sigma=SMOOTHING_SIGMA)
 

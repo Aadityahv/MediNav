@@ -1,8 +1,13 @@
 import numpy as np
 import matplotlib.pyplot as plt
+import os
+from scipy.ndimage import gaussian_filter
 
 # A simple 2D GraphSLAM implementation
 # Optimize robot trajectory using simulated odometry and landmark measurements.
+
+EPS = 1e-8
+_LAST_DELTA_VECTOR = None
 
 def simulate_environment():
     # 5-8 landmarks in an L-shaped hospital corridor
@@ -85,7 +90,57 @@ def generate_measurements(true_poses, landmarks):
             
     return odometry, noisy_poses, observations
 
+def export_uncertainty_map(poses, grid_shape=(100, 100), sigma=3.0):
+    """
+    Converts per-pose uncertainty (from the final optimization update magnitude)
+    into a 2D uncertainty field over the occupancy grid.
+    """
+    if len(grid_shape) != 2:
+        raise ValueError("grid_shape must be a 2D tuple")
+
+    uncertainty_map = np.zeros(grid_shape, dtype=float)
+    poses = np.asarray(poses)
+    num_poses = poses.shape[0]
+
+    if num_poses == 0:
+        return uncertainty_map
+
+    if _LAST_DELTA_VECTOR is not None and _LAST_DELTA_VECTOR.size > 0:
+        per_pose_uncertainty = np.linalg.norm(_LAST_DELTA_VECTOR) / max(num_poses, 1)
+    else:
+        per_pose_uncertainty = 0.0
+
+    x_vals = poses[:, 0]
+    y_vals = poses[:, 1]
+
+    x_min, x_max = np.min(x_vals), np.max(x_vals)
+    y_min, y_max = np.min(y_vals), np.max(y_vals)
+
+    if np.isclose(x_max, x_min):
+        grid_x = np.full(num_poses, grid_shape[1] // 2, dtype=int)
+    else:
+        grid_x = np.rint((x_vals - x_min) / (x_max - x_min) * (grid_shape[1] - 1)).astype(int)
+
+    if np.isclose(y_max, y_min):
+        grid_y = np.full(num_poses, grid_shape[0] // 2, dtype=int)
+    else:
+        grid_y = np.rint((y_vals - y_min) / (y_max - y_min) * (grid_shape[0] - 1)).astype(int)
+
+    grid_x = np.clip(grid_x, 0, grid_shape[1] - 1)
+    grid_y = np.clip(grid_y, 0, grid_shape[0] - 1)
+
+    for gx, gy in zip(grid_x, grid_y):
+        uncertainty_map[gy, gx] = max(uncertainty_map[gy, gx], per_pose_uncertainty)
+
+    uncertainty_map = gaussian_filter(uncertainty_map, sigma=sigma)
+    uncertainty_map = (uncertainty_map - uncertainty_map.min()) / (
+        uncertainty_map.max() - uncertainty_map.min() + EPS
+    )
+    return uncertainty_map
+
 def build_and_optimize(noisy_poses, landmarks, odometry, observations):
+    global _LAST_DELTA_VECTOR
+
     # Initialization
     # We will optimize robot poses. For simplicity, assume landmarks are known 
     # (or could be optimized as well, but instructions mention known cylindrical landmarks).
@@ -187,6 +242,7 @@ def build_and_optimize(noisy_poses, landmarks, odometry, observations):
         # Solve
         delta = np.linalg.solve(H, -b)
         delta = delta.flatten()
+        _LAST_DELTA_VECTOR = delta.copy()
         
         # Update poses
         for i in range(num_poses):
@@ -203,13 +259,13 @@ def main():
     odometry, noisy_poses, observations = generate_measurements(true_poses, landmarks)
     
     noisy_poses = np.array(noisy_poses)
-    optimized_poses = build_and_optimize(noisy_poses, landmarks, odometry, observations)
+    slam_poses = build_and_optimize(noisy_poses, landmarks, odometry, observations)
     
     # Plot true, noisy, and optimized trajectory
     plt.figure(figsize=(10, 8))
     plt.plot(true_poses[:, 0], true_poses[:, 1], 'g-', label='True Trajectory', linewidth=2)
     plt.plot(noisy_poses[:, 0], noisy_poses[:, 1], 'r-', label='Dead Reckoning', linewidth=2)
-    plt.plot(optimized_poses[:, 0], optimized_poses[:, 1], 'b-', label='SLAM Optimized', linewidth=2)
+    plt.plot(slam_poses[:, 0], slam_poses[:, 1], 'b-', label='SLAM Optimized', linewidth=2)
     
     plt.scatter(landmarks[:, 0], landmarks[:, 1], c='black', marker='*', s=150, label='Landmarks')
     
@@ -220,12 +276,16 @@ def main():
     plt.grid(True)
     plt.axis('equal')
     
-    import os
     if not os.path.exists('outputs'):
         os.makedirs('outputs')
         
     plt.savefig('outputs/slam_trajectory.png', dpi=150)
     print("Saved plot to outputs/slam_trajectory.png")
+
+    uncertainty_map = export_uncertainty_map(slam_poses, grid_shape=(100, 100))
+    np.save('outputs/slam_uncertainty.npy', uncertainty_map)
+    print("Saved SLAM uncertainty map to outputs/slam_uncertainty.npy")
+    print(f"Uncertainty map: min={uncertainty_map.min():.4f}, max={uncertainty_map.max():.4f}, mean={uncertainty_map.mean():.4f}")
 
 if __name__ == '__main__':
     main()
