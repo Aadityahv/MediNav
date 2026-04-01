@@ -1,12 +1,3 @@
-"""
-MediNav — Path Smoothing + Multiple Hospital Layouts
-planner/path_smooth.py
-
-Outputs:
-    outputs/path_smoothed.png   — raw vs cubic-spline smoothed path
-    outputs/multi_layout.png    — 3 hospital layouts with both planners
-"""
-
 import heapq
 import math
 import os
@@ -20,18 +11,11 @@ from scipy.interpolate import CubicSpline
 
 os.makedirs("outputs", exist_ok=True)
 
-# ===========================================================================
-# Shared A* implementation
-# ===========================================================================
 
 def _h(a, b):
     return math.sqrt((a[0] - b[0]) ** 2 + (a[1] - b[1]) ** 2)
 
 def astar(grid, risk_map, start, goal, lambda_weight=0.0):
-    """
-    A* with cost: f = g_dist + lambda*g_risk + h
-    Returns list of (row, col) or None.
-    """
     rows, cols = grid.shape
     open_heap = [(_h(start, goal), 0.0, 0.0, start[0], start[1])]
     best = {start: (0.0, 0.0)}
@@ -86,16 +70,11 @@ def astar(grid, risk_map, start, goal, lambda_weight=0.0):
 
 
 def build_risk_map(grid, alpha=1.5):
-    """Wall-proximity risk map via distance transform."""
     free_mask = (grid == 0).astype(float)
     dist = distance_transform_edt(free_mask)
     risk = np.exp(-alpha * dist)
     return np.clip(risk, 0, 1)
 
-
-# ===========================================================================
-# PART 1 — Standard MediNav grid
-# ===========================================================================
 
 def build_standard_grid():
     g = np.ones((100, 100), dtype=int)
@@ -103,10 +82,8 @@ def build_standard_grid():
     g[70:81, 0:100] = 0
     g[20:71, 70:81] = 0
     g[40:51, 0:81]  = 0
-    # border walls
     g[0, :]  = 1;  g[99, :] = 1
     g[:, 0]  = 1;  g[:, 99] = 1
-    # equipment obstacles
     g[43:45, 20:22] = 1
     g[43:45, 40:42] = 1
     g[45:47, 58:60] = 1
@@ -124,10 +101,6 @@ raw_path = astar(grid_std, risk_std, START, GOAL, lambda_weight=8.0)
 if raw_path is None:
     raise RuntimeError("A* found no path on standard grid.")
 
-# ---------------------------------------------------------------------------
-# Cubic spline smoothing
-# ---------------------------------------------------------------------------
-
 raw_rows = np.array([p[0] for p in raw_path], dtype=float)
 raw_cols = np.array([p[1] for p in raw_path], dtype=float)
 t = np.linspace(0, 1, len(raw_path))
@@ -139,11 +112,9 @@ t_fine = np.linspace(0, 1, 300)
 smooth_rows = cs_r(t_fine)
 smooth_cols = cs_c(t_fine)
 
-# Clamp to grid bounds
 smooth_rows = np.clip(smooth_rows, 0, 99)
 smooth_cols = np.clip(smooth_cols, 0, 99)
 
-# Remove points that land on walls
 valid = [
     (int(round(r)), int(round(c)))
     for r, c in zip(smooth_rows, smooth_cols)
@@ -154,10 +125,6 @@ smooth_path_c = [p[1] for p in valid]
 
 print(f"[Part 1] Raw path    : {len(raw_path)} cells")
 print(f"[Part 1] Smoothed    : {len(valid)} points sampled")
-
-# ---------------------------------------------------------------------------
-# Plot Part 1 — path_smoothed.png
-# ---------------------------------------------------------------------------
 
 H, W = 100, 100
 fig1, axes1 = plt.subplots(1, 2, figsize=(14, 7))
@@ -213,16 +180,11 @@ plt.close(fig1)
 print("Saved → outputs/path_smoothed.png")
 
 
-# ===========================================================================
-# PART 2 — Multiple Hospital Layouts
-# ===========================================================================
-
 def add_border(g):
     g[0, :] = 1;  g[99, :] = 1
     g[:, 0] = 1;  g[:, 99] = 1
     return g
 
-# Layout 1 — Standard Ward
 def layout_standard():
     g = np.ones((100, 100), dtype=int)
     g[10:21, 0:100] = 0
@@ -235,30 +197,28 @@ def layout_standard():
     g[42:44, 70:72] = 1
     return add_border(g)
 
-# Layout 2 — T-Junction Ward
 def layout_tjunction():
     g = np.ones((100, 100), dtype=int)
-    g[45:56, 0:100] = 0   # central horizontal corridor
-    g[0:46,  45:56] = 0   # vertical top
-    g[45:100,45:56] = 0   # vertical bottom
-    g[10:21, 0:46]  = 0   # top left wing
-    g[75:86, 0:46]  = 0   # bottom left wing
-    g[10:21, 55:100]= 0   # top right wing
-    g[75:86, 55:100]= 0   # bottom right wing
+    g[45:56, 0:100] = 0
+    g[0:46,  45:56] = 0
+    g[45:100,45:56] = 0
+    g[10:21, 0:46]  = 0
+    g[75:86, 0:46]  = 0
+    g[10:21, 55:100]= 0
+    g[75:86, 55:100]= 0
     return add_border(g)
 
-# Layout 3 — L-Shape Ward
 def layout_lshape():
     g = np.ones((100, 100), dtype=int)
-    g[5:96,  5:20]  = 0   # left vertical corridor
-    g[80:96, 5:96]  = 0   # bottom horizontal corridor
-    g[5:21,  5:96]  = 0   # top horizontal corridor
+    g[5:96,  5:20]  = 0
+    g[80:96, 5:96]  = 0
+    g[5:21,  5:96]  = 0
     return add_border(g)
 
 layouts = [
-    ("Standard Ward",  layout_standard(), (15, 5),  (75, 75)),
-    ("T-Junction Ward",layout_tjunction(),(12, 5),  (78, 5)),
-    ("L-Shape Ward",   layout_lshape(),   (10, 10), (85, 85)),
+    ("Standard Ward",   layout_standard(),  (15, 5),  (75, 75)),
+    ("T-Junction Ward", layout_tjunction(), (12, 5),  (78, 5)),
+    ("L-Shape Ward",    layout_lshape(),    (10, 10), (85, 85)),
 ]
 
 fig2, axes2 = plt.subplots(1, 3, figsize=(18, 6))
@@ -275,7 +235,6 @@ for ax, (name, g, s, goal) in zip(axes2, layouts):
     if p_safe is None:
         print(f"WARNING: Risk-Aware A* found no path for '{name}'")
 
-    # Count safety violations = cells with risk > 0.5
     def violations(path, risk_map):
         if path is None:
             return 0
@@ -294,18 +253,15 @@ for ax, (name, g, s, goal) in zip(axes2, layouts):
           f"Safe: {len_safe} cells, {viol_safe} violations | "
           f"Violations reduced: {viol_reduction:.1f}%")
 
-    # Draw map
     wall_disp = np.where(g == 1, 0.0, 0.2)
     ax.imshow(wall_disp, cmap="gray", vmin=0, vmax=1,
               origin="upper", interpolation="nearest")
 
-    # Risk overlay
     r_rgba = np.zeros((100, 100, 4), dtype=float)
     r_rgba[:, :, 0] = risk
     r_rgba[:, :, 3] = risk * 0.25
     ax.imshow(r_rgba, origin="upper", interpolation="nearest")
 
-    # Paths
     if p_std:
         ax.plot([c for _, c in p_std], [r for r, _ in p_std],
                 color="#e63946", linewidth=1.8, linestyle="--",
@@ -315,13 +271,11 @@ for ax, (name, g, s, goal) in zip(axes2, layouts):
                 color="#4895ef", linewidth=2.0, linestyle="-",
                 zorder=6, label=f"Risk-Aware ({len_safe})")
 
-    # Start / goal
     ax.plot(s[1],    s[0],    "o", color="#06d6a0", markersize=9,
             markeredgecolor="white", markeredgewidth=1.2, zorder=7)
     ax.plot(goal[1], goal[0], "*", color="#ffd166", markersize=13,
             markeredgecolor="white", markeredgewidth=1.0, zorder=7)
 
-    # Stats annotation
     stats = (f"Std: {len_std} cells  |  Safe: {len_safe} cells\n"
              f"Violations reduced {viol_reduction:.0f}%")
     ax.text(50, 94, stats, ha="center", va="center", fontsize=7.5,
