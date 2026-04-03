@@ -1,0 +1,12 @@
+Extended Evaluation — Dijkstra vs Standard A* vs Risk-Aware A*
+Trials: 30/30  Seed: 42
+
+┌──────────────────────────────┬──────────────┬──────────────┬──────────────────┐
+│ Metric                       │ Dijkstra     │ Standard A*  │ Risk-Aware A*    │
+├──────────────────────────────┼──────────────┼──────────────┼──────────────────┤
+│ Mean Path Length (cells)     │        60.6  │        60.6  │            62.3  │
+│ Path Length vs Dijkstra (%)  │          0%  │        0.0%  │            2.9%  │
+│ Mean Min Clearance (cells)   │        2.35  │        2.25  │            3.42  │
+│ Mean Safety Violations       │        28.0  │        29.7  │             1.9  │
+│ Safety Violation Rate (%)    │       46.2%  │       49.1%  │            3.1%  │
+└──────────────────────────────┴──────────────┴──────────────┴──────────────────┘
