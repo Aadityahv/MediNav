@@ -48,7 +48,9 @@ MediNav/
 │   └── occupancy_grid.py
 ├── risk/                   ← Ojas's module
 │   ├── risk_map.py
-│   └── visualize_risk.py
+│   ├── visualize_risk.py
+│   ├── metrics.py
+│   └── risk_analysis.py
 ├── planner/                ← Hansel's module
 │   ├── astar_risk.py
 │   └── path_compare.py
@@ -78,6 +80,8 @@ python slam/graphslam.py          # generates outputs/slam_trajectory.png
 python slam/occupancy_grid.py     # generates outputs/occupancy_grid.png
 python risk/risk_map.py           # generates outputs/risk_map.npy
 python risk/visualize_risk.py     # generates outputs/risk_visualization.png
+python risk/metrics.py            # prints risk statistics to terminal
+python risk/risk_analysis.py      # generates outputs/risk_analysis.png
 python planner/astar_risk.py      # prints path length comparison
 python planner/path_compare.py    # generates outputs/path_comparison.png
 python simulation/evaluate.py     # prints stats table + outputs/evaluation_results.png
@@ -223,9 +227,9 @@ git commit -m "update"
 
 ### 🧠 Ojas Sahu — `risk` branch
 
-**Your files:** `risk/risk_map.py` and `risk/visualize_risk.py`
+**Your files:** `risk/risk_map.py`, `risk/visualize_risk.py`, `risk/metrics.py`, and `risk/risk_analysis.py`
 
-**Your output:** `outputs/risk_visualization.png` — a 3-panel figure showing occupancy grid, risk heatmap, and overlay.
+**Your output:** `outputs/risk_visualization.png` and `outputs/risk_analysis.png` — detailed risk analysis and visualizations.
 
 **Steps:**
 ```bash
@@ -237,6 +241,8 @@ git checkout -b risk
 # 3. Test that they actually run without errors
 python risk/risk_map.py
 python risk/visualize_risk.py
+python risk/metrics.py
+python risk/risk_analysis.py
 
 # 4. Check you are on the right branch before committing
 git branch
@@ -244,15 +250,17 @@ git branch
 
 # 5. Save and upload your work
 git add risk/
-git commit -m "Add risk map computation and 3-panel visualization"
+git commit -m "Add risk map computation, metrics, and visualization scripts"
 git push origin risk
 
 # 6. Message Aaditya on WhatsApp: "risk branch ready to merge"
 ```
 
 **What your scripts must produce:**
-- `risk_map.py` → prints min/max/mean risk values to terminal, saves `outputs/risk_map.npy`
+- `risk_map.py` → prints min/max/mean risk values, saves `outputs/risk_map.npy`
 - `visualize_risk.py` → saves `outputs/risk_visualization.png` (3 subplots: occupancy grid | risk heatmap | overlay)
+- `metrics.py` → prints detailed risk distribution statistics to terminal
+- `risk_analysis.py` → saves `outputs/risk_analysis.png` (Risk Heatmap | Distribution Histogram | Overlay)
 
 ---
 
