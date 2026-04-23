@@ -243,5 +243,5 @@ os.makedirs("outputs", exist_ok=True)
 out_path = "outputs/path_comparison.png"
 plt.savefig(out_path, dpi=150, bbox_inches="tight",
             facecolor=fig.get_facecolor())
-print(f"\nSaved → {out_path}")
+print(f"\nSaved -> {out_path}")
 plt.close()
